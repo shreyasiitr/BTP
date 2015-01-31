@@ -32,12 +32,15 @@ def main():
                     inputready,outputready,exceptready = select.select ([self.conn],[self.conn],[])
                     for input_item in inputready:
                         # Handle sockets
-                        message = self.conn.recv(1024)
-                        if message:
+                        try:
+                            message = self.conn.recv(1024)
                             print "Daniel: " + message + ' (' + datetime.datetime.now().strftime('%H:%M:%S') + ')'
-                        else:
+                        except:
+                            print Exception
+                            self.running=False
                             break
                     time.sleep(0)
+                self.sock.close()
             def kill(self):
                 self.running = 0
 
@@ -61,7 +64,7 @@ def main():
                             message = self.sock.recv(1024)
                             print "Daniel: " + message + ' (' + datetime.datetime.now().strftime('%H:%M:%S') + ')'
                         except:
-                            print Exception.message
+                            print Exception
                             self.running=False
                             break
                     time.sleep(0)
