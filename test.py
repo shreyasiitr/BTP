@@ -35,7 +35,7 @@ def main():
                         try:
                             message = self.conn.recv(1024)
                             print "Daniel: " + message + ' (' + datetime.datetime.now().strftime('%H:%M:%S') + ')'
-                        except:
+                        except(KeyboardInterrupt,SystemExit):
                             print Exception
                             self.running=False
                             break
@@ -63,7 +63,7 @@ def main():
                         try:
                             message = self.sock.recv(1024)
                             print "Daniel: " + message + ' (' + datetime.datetime.now().strftime('%H:%M:%S') + ')'
-                        except:
+                        except(KeyboardInterrupt,SystemExit):
                             print Exception
                             self.running=False
                             break
@@ -81,11 +81,11 @@ def main():
                   text = raw_input('')
                   try:
                       chat_client.sock.sendall(text)
-                  except:
+                  except(KeyboardInterrupt,SystemExit):
                       Exception
                   try:
                       chat_server.conn.sendall(text)
-                  except:
+                  except(KeyboardInterrupt,SystemExit):
                       Exception
                   time.sleep(0)
             def kill(self):
@@ -99,13 +99,14 @@ def main():
         try:
             chat_server = Chat_Server()
             chat_client = Chat_Client()
+            chat_server.daemon=True
             chat_server.start()
-            #
             text_input = Text_Input()
+            text_input.daemon=True
             text_input.start()
             chat_server.join()
             text_input.join()
-        except:
+        except(KeyboardInterrupt,SystemExit):
             Exception
 
     else:
@@ -113,12 +114,14 @@ def main():
             chat_server = Chat_Server()
             chat_client = Chat_Client()
             chat_client.host = ip_addr
+            chat_client.daemon=True
             text_input = Text_Input()
+            text_input.daemon=True
             chat_client.start()
             text_input.start()
             chat_client.join()
             text_input.join()
-        except:
+        except(KeyboardInterrupt,SystemExit):
             Exception
 
 if __name__ == "__main__":
